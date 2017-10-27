@@ -69,14 +69,14 @@
           <v-stepper-step step="7">Confirmation</v-stepper-step>
         </v-stepper-header>
         <v-stepper-content step="1">
-          <v-card class="mb-5" >
+          <v-card class="mb-5" fill-height>
               <v-card-title>
                 <span class="headline">Policy Details</span>
               </v-card-title>
             <v-layout row justify-center>
                   <v-card-text>
                     <v-container grid-list-md>
-                      <v-layout wrap>
+                      <v-layout wrap fill-height>
                         <v-flex xs12 sm6 md3>
                           <v-text-field label="First name" required hint="what's your first name?"></v-text-field>
                         </v-flex>
@@ -201,7 +201,38 @@
           <v-btn flat>Cancel</v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <v-card color="grey lighten-1" class="mb-5" ></v-card>
+          <v-card class="mb-5" >
+            <v-tabs >
+              <v-tabs-bar class="grey lighten-4">
+                <v-tabs-slider color="yellow"></v-tabs-slider>
+                <v-tabs-item
+                        v-for="i in 5"
+                        :key="i"
+                        :href="'#tab-' + i"
+                >
+                  Vehicle {{ i }}
+                  <v-btn small icon>
+                    <v-icon small>clear</v-icon>
+                  </v-btn>
+                </v-tabs-item>
+                <v-btn icon>
+                  <v-icon>add</v-icon>
+                </v-btn>
+
+              </v-tabs-bar>
+              <v-tabs-items>
+                <v-tabs-content
+                        v-for="i in 5"
+                        :key="i"
+                        :id="'tab-' + i"
+                >
+                  <v-card flat>
+                    <v-card-text>Vehicle {{i}}</v-card-text>
+                  </v-card>
+                </v-tabs-content>
+              </v-tabs-items>
+            </v-tabs>
+          </v-card>
           <v-btn color="primary" @click.native="e1 = 3">Continue</v-btn>
           <v-btn flat @click.native="e1 =1">Back</v-btn>
         </v-stepper-content>
@@ -244,7 +275,7 @@
       template: '#page',
         data:function() {
           return {
-              e1:0,
+              e1:1,
               effDate:null ,
               expDate:null,
               contactDialog:false,
