@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Vuetify</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+  <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link>
+  <link href="styles.css" rel="stylesheet" type="text/css">
+  <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+
+      <v-toolbar fixed app>
+
+        <v-toolbar-title v-text="title"></v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn
+          icon
+          @click.native.stop="rightDrawer=true"
+        >
+          <v-icon>menu</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <main>
+        <v-content>
+          <v-container fluid>
+            <page></page>
+          </v-container>
+        </v-content>
+      </main>
+      <v-navigation-drawer
+        temporary
+        :right="right"
+        v-model="rightDrawer"
+        app
+      >
+        <v-list>
+          <v-list-tile >
+            <v-list-tile-action>
+              <v-icon>widgets</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>Put customer info here</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-navigation-drawer>
+    </v-app>
+  </div>
+
+  <script type="text/x-template" id="page">
+<div>
+      <v-stepper v-model="e1">
+        <v-stepper-header>
+          <v-stepper-step step="1" :complete="e1 > 1" editable>Policy Details</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="2" :complete="e1 > 2" editable>Vehicles</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="3" :complete="e1 > 3" editable>Drivers</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="4" :complete="e1 > 4" editable>Vehicle/Driver Assigments</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="5" :complete="e1 > 5" editable>Rating</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="6" :complete="e1 > 6" editable>Billing</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="7">Confirmation</v-stepper-step>
+        </v-stepper-header>
+        <v-stepper-content step="1">
+          <v-card class="mb-5" >
+              <v-card-title>
+                <span class="headline">Policy Details</span>
+              </v-card-title>
+            <v-layout row justify-center>
+                  <v-card-text>
+                    <v-container grid-list-md>
+                      <v-layout wrap>
+                        <v-flex xs12 sm6 md3>
+                          <v-text-field label="First name" required hint="what's your first name?"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md3>
+                          <v-text-field label="Last name" hint="what's your last name?" required></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md3>
+                          <v-menu
+                                  lazy
+                                  :close-on-content-click="false"
+                                  v-model="menu"
+                                  transition="scale-transition"
+                                  offset-y
+                                  full-width
+                                  :nudge-right="40"
+                                  max-width="290px"
+                                  min-width="290px"
+                          >
+                            <v-text-field
+                                    v-model="effDate"
+                                    slot="activator"
+                                    label="Effective Date"
+                                    prepend-icon="event"
+                                    readonly
+                            ></v-text-field>
+                            <v-date-picker v-model="effDate" no-title scrollable actions>
+                              <template scope="{ save, cancel }">
+                                <v-card-actions>
+                                  <v-spacer></v-spacer>
+                                  <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
+                                  <v-btn flat color="primary" @click="save">OK</v-btn>
+                                </v-card-actions>
+                              </template>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-flex>
+                        <v-flex xs12 sm6 md3>
+                          <v-menu
+                                  lazy
+                                  :close-on-content-click="false"
+                                  v-model="menu2"
+                                  transition="scale-transition"
+                                  offset-y
+
+                                  full-width
+                                  :nudge-right="40"
+                                  max-width="290px"
+                                  min-width="290px"
+                          >
+                            <v-text-field
+                                    v-model="expDate"
+                                    slot="activator"
+                                    label="Expiration Date"
+                                    prepend-icon="event"
+                                    readonly
+                            ></v-text-field>
+                            <v-date-picker v-model="expDate" no-title scrollable actions>
+                              <template scope="{ save, cancel }">
+                                <v-card-actions>
+                                  <v-spacer></v-spacer>
+                                  <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
+                                  <v-btn flat color="primary" @click="save">OK</v-btn>
+                                </v-card-actions>
+                              </template>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-flex>
+                        <v-flex xs12>
+                          <v-text-field label="Address" required></v-text-field>
+                        </v-flex>
+
+                        <v-flex xs3>
+                          <v-flex xs12>
+                            <v-text-field label="Phone number" required mask="phone" ></v-text-field>
+                          </v-flex>
+                        </v-flex>
+                        <v-flex xs8 >
+                          <v-dialog v-model="contactDialog" persistent max-width="800px">
+
+                            <v-btn  small slot="activator">Add More Phone Numbers</v-btn>
+                            <v-card>
+                              <v-card-title>
+                                <span class="headline">Contact Info</span>
+                              </v-card-title>
+                              <v-card-text>
+                                <v-container grid-list-md>
+                                  <v-layout wrap>
+                                    <v-flex xs12>
+                                      <v-text-field
+                                              label="Email address"
+                                              required
+                                              suffix="@gmail.com"
+                                      ></v-text-field>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                      <v-text-field label="Mobile" required mask="phone" ></v-text-field>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                      <v-text-field label="Home" required mask="phone" ></v-text-field>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                      <v-text-field label="Business" required mask="phone" ></v-text-field>
+                                    </v-flex>
+                                  </v-layout>
+                                </v-container>
+                              </v-card-text>
+                              <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue darken-1" flat @click.native="contactDialog = false">Close</v-btn>
+                                <v-btn color="blue darken-1" flat @click.native="contactDialog = false">Save</v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
+                          </v-flex>
+
+                      </v-layout>
+                    </v-container>
+                  </v-card-text>
+            </v-layout>
+            </v-card>
+          <v-btn color="primary" @click.native="e1 = 2">Continue</v-btn>
+          <v-btn flat>Cancel</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="2">
+          <v-card color="grey lighten-1" class="mb-5" ></v-card>
+          <v-btn color="primary" @click.native="e1 = 3">Continue</v-btn>
+          <v-btn flat @click.native="e1 =1">Back</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="3">
+          <v-card color="grey lighten-1" class="mb-5" ></v-card>
+          <v-btn color="primary" @click.native="e1 = 4">Continue</v-btn>
+          <v-btn flat @click.native="e1 =1">Back</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="4">
+          <v-card color="grey lighten-1" class="mb-5" ></v-card>
+          <v-btn color="primary" @click.native="e1 = 5">Continue</v-btn>
+          <v-btn flat @click.native="e1 =1">Back</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="5">
+          <v-card color="grey lighten-1" class="mb-5" ></v-card>
+          <v-btn color="primary" @click.native="e1 = 6">Continue</v-btn>
+          <v-btn flat @click.native="e1 =1">Back</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="6">
+          <v-card color="grey lighten-1" class="mb-5" ></v-card>
+          <v-btn color="primary" @click.native="e1 = 7">Continue</v-btn>
+          <v-btn flat @click.native="e1 =1">Back</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="7">
+          <v-card color="grey lighten-1" class="mb-5" ></v-card>
+          <v-btn color="primary" @click.native="e1 = 1">Continue</v-btn>
+          <v-btn flat @click.native="e1 =1">Back</v-btn>
+        </v-stepper-content>
+      </v-stepper>
+
+
+  </div>
+  </script>
+
+
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+  <script>
+    Vue.component('page', {
+      template: '#page',
+        data:function() {
+          return {
+              e1:0,
+              effDate:null ,
+              expDate:null,
+              contactDialog:false,
+              menu2:null,
+              menu:null
+          }
+        }
+    })
+    new Vue({
+      el: '#app',
+      data: {
+        clipped: false,
+        drawer: true,
+        fixed: false,
+        items: [
+          { icon: 'bubble_chart', title: 'Inspire' }
+        ],
+        miniVariant: false,
+        right: true,
+        rightDrawer: false,
+        title: 'Policy Demo'
+      }
+    })
+  </script>
+</body>
+</html>
