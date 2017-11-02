@@ -1,248 +1,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Vuetify</title>
-  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
-  <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link>
-  <link href="styles.css" rel="stylesheet" type="text/css">
-  <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Vuetify</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet"
+          type="text/css">
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link>
+    <link href="styles.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
     <style>
-        .beside-switch { margin-top:-18px;}
+        .beside-switch {
+            margin-top: -18px;
+        }
     </style>
 </head>
 <body>
-  <div id="app">
+<div id="app">
     <v-app>
 
-      <v-toolbar fixed app>
+        <v-toolbar fixed app>
 
-        <v-toolbar-title v-text="title"></v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          icon
-          @click.native.stop="rightDrawer=true"
+            <v-toolbar-title v-text="title"></v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn
+                    icon
+                    @click.native.stop="rightDrawer=true"
+            >
+                <v-icon>menu</v-icon>
+            </v-btn>
+        </v-toolbar>
+        <main>
+            <v-content>
+                <v-container fluid>
+                    <page></page>
+                </v-container>
+            </v-content>
+        </main>
+        <v-navigation-drawer
+                temporary
+                :right="right"
+                v-model="rightDrawer"
+                app
         >
-          <v-icon>menu</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <main>
-        <v-content>
-          <v-container fluid>
-            <page></page>
-          </v-container>
-        </v-content>
-      </main>
-      <v-navigation-drawer
-        temporary
-        :right="right"
-        v-model="rightDrawer"
-        app
-      >
-        <v-list>
-          <v-list-tile >
-            <v-list-tile-action>
-              <v-icon>widgets</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title>Put customer info here</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-navigation-drawer>
+            <v-list>
+                <v-list-tile>
+                    <v-list-tile-action>
+                        <v-icon>widgets</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-title>Put customer info here</v-list-tile-title>
+                </v-list-tile>
+            </v-list>
+        </v-navigation-drawer>
     </v-app>
-  </div>
+</div>
 
-  <script type="text/x-template" id="page">
-<div>
-      <v-stepper v-model="e1">
-        <v-stepper-header>
-          <v-stepper-step step="1" :complete="e1 > 1" editable>Policy Details</v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step step="2" :complete="e1 > 2" editable>Vehicles</v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step step="3" :complete="e1 > 3" editable>Drivers</v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step step="4" :complete="e1 > 4" editable>Vehicle/Driver Assigments</v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step step="5" :complete="e1 > 5" editable>Rating</v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step step="6" :complete="e1 > 6" editable>Billing</v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step step="7">Confirmation</v-stepper-step>
-        </v-stepper-header>
-        <v-stepper-content step="1">
-          <v-card class="mb-5" fill-height>
-              <v-card-title>
-                <span class="headline">Policy Details</span>
-              </v-card-title>
-            <v-layout row justify-center>
-                  <v-card-text>
-                    <v-container grid-list-md>
-                      <v-layout wrap fill-height>
-                        <v-flex xs12 sm6 md3>
-                          <v-text-field label="First name" required hint="what's your first name?"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md3>
-                          <v-text-field label="Last name" hint="what's your last name?" required></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md3>
-                          <v-menu
-                                  lazy
-                                  :close-on-content-click="false"
-                                  v-model="menu"
-                                  transition="scale-transition"
-                                  offset-y
-                                  full-width
-                                  :nudge-right="40"
-                                  max-width="290px"
-                                  min-width="290px"
-                          >
-                            <v-text-field
-                                    v-model="effDate"
-                                    slot="activator"
-                                    label="Effective Date"
-                                    prepend-icon="event"
-                                    readonly
-                            ></v-text-field>
-                            <v-date-picker v-model="effDate" no-title scrollable actions>
-                              <template scope="{ save, cancel }">
-                                <v-card-actions>
-                                  <v-spacer></v-spacer>
-                                  <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                                  <v-btn flat color="primary" @click="save">OK</v-btn>
-                                </v-card-actions>
-                              </template>
-                            </v-date-picker>
-                          </v-menu>
-                        </v-flex>
-                        <v-flex xs12 sm6 md3>
-
-                            <v-select
-                                    v-bind:items="dates"
-                                    v-model="expDate"
-                                    label="Policy Term"
-                                    autocomplete
-                                    :hint = expires
-                                    persistent-hint
-                            ></v-select>
-                        </v-flex>
-                        <v-flex xs12>
-                          <v-text-field label="Address" required></v-text-field>
-                        </v-flex>
-
-                        <v-flex xs3>
-                          <v-flex xs12>
-                            <v-text-field label="Phone number" required mask="phone" ></v-text-field>
-                          </v-flex>
-                        </v-flex>
-                        <v-flex xs8>
-                          <v-dialog v-model="contactDialog" persistent max-width="600px">
-                            <v-btn  small slot="activator">More...</v-btn>
-                            <v-card>
-                              <v-card-title>
-                                <span class="headline">Contact Info</span>
-                              </v-card-title>
-                              <v-card-text>
-                                <v-container grid-list-md>
-                                  <v-layout wrap>
-                                    <v-flex xs12>
-                                      <v-text-field
-                                              label="Email address"
-                                              required
-                                              suffix="@gmail.com"
-                                      ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                      <v-text-field label="Mobile" required mask="phone" ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                      <v-text-field label="Home" required mask="phone" ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                      <v-text-field label="Business" required mask="phone" ></v-text-field>
-                                    </v-flex>
-                                  </v-layout>
-                                </v-container>
-                              </v-card-text>
-                              <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" flat @click.native="contactDialog = false">Close</v-btn>
-                              </v-card-actions>
-                            </v-card>
-                          </v-dialog>
-                          </v-flex>
-
-                      </v-layout>
-                    </v-container>
-                  </v-card-text>
-            </v-layout>
-            </v-card>
-          <v-btn color="primary" @click.native="e1 = 2">Continue</v-btn>
-          <v-btn flat>Cancel</v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="2">
-          <v-card class="mb-5" >
-            <v-tabs >
-              <v-tabs-bar class="grey lighten-4">
-                <v-tabs-slider></v-tabs-slider>
-                <v-tabs-item
-                        v-for="i in 2"
-                        :key="i"
-                        :href="'#tab-' + i"
-                >
-                  Vehicle {{ i }}
-                </v-tabs-item>
-                  <v-tooltip right>
-                      <v-btn slot="activator"icon>
-                          <v-icon>add</v-icon>
-                      </v-btn>
-                      <span>Add Vehicle</span>
-                  </v-tooltip>
-              </v-tabs-bar>
-              <v-tabs-items>
-                <v-tabs-content
-                        v-for="(n,i) in 2"
-                        :key="n"
-                        :id="'tab-' + n"
-                >
-
-
-                    <v-card flat class="mb-5" fill-height>
-                        <v-layout row >
-                            <!--VIN Year Make Model-->
+<script type="text/x-template" id="page">
+    <div>
+        <v-stepper v-model="e1">
+            <v-stepper-header>
+                <v-stepper-step step="1" :complete="e1 > 1" editable>Policy Details</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="2" :complete="e1 > 2" editable>Vehicles</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="3" :complete="e1 > 3" editable>Drivers</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="4" :complete="e1 > 4" editable>Vehicle/Driver Assigments</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="5" :complete="e1 > 5" editable>Rating</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="6" :complete="e1 > 6" editable>Billing</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="7">Confirmation</v-stepper-step>
+            </v-stepper-header>
+            <v-stepper-content step="1">
+                <v-card class="mb-5" fill-height>
+                    <v-form v-model="valid">
+                        <v-card-title>
+                            <span class="headline">Policy Details</span>
+                        </v-card-title>
                             <v-card-text>
                                 <v-container grid-list-md>
-                                    <v-layout wrap fill-height>
-                                        <v-flex xs12 sm6 md3>
-                                            <v-text-field label="VIN" required ></v-text-field>
-                                        </v-flex>
-                                        <v-flex xs12 sm6 md3>
-                                            <v-select
-                                                    v-bind:items="years"
-                                                    v-model="year[i]"
-                                                    label="Year"
-                                                    autocomplete
-                                                    persistent-hint
-                                            ></v-select>
-                                        </v-flex>
-                                        <v-flex xs12 sm6 md3>
-                                            <v-select v-bind:items="makes" v-model="make[i]" label="Make" autocomplete></v-select>
-                                        </v-flex>
-                                        <v-flex xs12 sm6 md3>
-                                            <v-select
-                                                    v-bind:items="models"
-                                                    v-model="model[i]"
-                                                    label="Model"
-                                                    autocomplete
-                                            ></v-select>
-                                        </v-flex>
 
+                                    <v-layout row>
                                         <v-flex xs12 sm6 md3>
-                                            <!--Purchase  Purchase Price List Price New-->
+                                            <v-text-field
+                                                    :rules="nameRules"
+                                                    :counter="10"
+                                                    label="First"
+                                                    v-model="firstName"
+                                                    required
+                                                    hint="what's your first name?"></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs12 sm6 md3>
+                                            <v-text-field
+                                                    v-model="lastName"
+                                                    label="Last"
+                                                    hint="what's your last name?"
+                                                    required></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs12 sm6 md3>
                                             <v-menu
+                                                    lazy
                                                     :close-on-content-click="false"
-                                                    v-model="menu3[i]"
+                                                    v-model="menu"
                                                     transition="scale-transition"
                                                     offset-y
                                                     full-width
@@ -251,13 +113,13 @@
                                                     min-width="290px"
                                             >
                                                 <v-text-field
-                                                        v-model="purchaseDate[i]"
+                                                        v-model="effDate"
                                                         slot="activator"
-                                                        label="Purchase Date"
+                                                        label="Effective Date"
                                                         prepend-icon="event"
                                                         readonly
                                                 ></v-text-field>
-                                                <v-date-picker v-model="purchaseDate[i]" no-title scrollable actions>
+                                                <v-date-picker v-model="effDate" no-title scrollable actions>
                                                     <template scope="{ save, cancel }">
                                                         <v-card-actions>
                                                             <v-spacer></v-spacer>
@@ -268,169 +130,373 @@
                                                 </v-date-picker>
                                             </v-menu>
                                         </v-flex>
-                                        <v-flex xs12 md3>
-                                            <v-text-field label="Purchase Price" required></v-text-field>
-                                        </v-flex>
-                                        <v-flex xs12 md3>
-                                            <v-text-field label="List Price New" required></v-text-field>
-                                        </v-flex>
-                                    </v-layout>
-                                    <v-layout row>
-                                        <v-flex xs12 md3 >
-                                            <v-switch label="Modified" v-model="modified[i]"  ></v-switch>
-                                        </v-flex>
-                                        <v-flex xs12 md3>
-                                            <v-text-field  class="beside-switch" prefix="$" suffix="(CAD)"  mask="####.##"  v-show="modified[i]" v-model="modAmount[i]" label="Modification amount"></v-text-field>
-                                        </v-flex>
-                                    </v-layout>
-                                    <v-layout row>
-                                        <v-flex xs12 md3>
-                                            <v-switch label="Leased" v-model="leased[i]"></v-switch>
-                                            <v-switch label="Unrepaired damage" v-model="damage[i]"></v-switch>
-                                        </v-flex>
-                                    </v-layout>
-                                    <v-layout row>
-                                        <v-flex xs12 md3 >
-                                            <v-switch label="Anti theft device" v-model="antitheft[i]"  ></v-switch>
-                                        </v-flex>
-                                        <v-flex xs12 md3>
+                                        <v-flex xs12 sm6 md3>
                                             <v-select
-                                                    v-show="antitheft[i]"
-                                                    class="beside-switch"
-                                                    v-bind:items="antitheftModels"
-                                                    v-model="antitheftModel"
-                                                    label="Antitheft Model"
+                                                    v-bind:items="dates"
+                                                    v-model="expDate"
+                                                    label="Policy Term"
                                                     autocomplete
+                                                    :hint=expires
+                                                    persistent-hint
                                             ></v-select>
                                         </v-flex>
                                     </v-layout>
+
                                     <v-layout row>
-                                        <v-flex xs12 md3>
-                                            <v-text-field  suffix="Km"  mask="#######"  v-model="estKm[i]" label="Estimated Annual Km"></v-text-field>
+                                        <v-flex md8>
+                                            <v-text-field label="Address" required></v-text-field>
                                         </v-flex>
-                                        <v-flex xs12 md3>
-                                            <v-text-field  suffix="Km"  mask="#######"  v-model="estBizKm[i]" label="Estimated Business Km"></v-text-field>
-                                        </v-flex>
-                                        <v-flex xs12 md3>
-                                            <v-text-field  suffix="Km"  mask="#######"  v-model="onewayDist[i]" label="Distance one way"></v-text-field>
+
+                                        <v-flex md2>
+                                            <v-text-field
+                                                    :rules="emailRules"
+                                                    label="Email"
+                                                    v-model="email"
+                                                    required>
+                                            </v-text-field>
                                         </v-flex>
                                     </v-layout>
 
-                                </v-container>
-                            </v-card-text>
-                        </v-layout>
-                    </v-card>
-                </v-tabs-content>
-              </v-tabs-items>
-            </v-tabs>
-          </v-card>
-          <v-btn color="primary" @click.native="e1 = 3">Continue</v-btn>
-          <v-btn flat @click.native="e1 =1">Back</v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="3">
-          <v-card color="grey lighten-1" class="mb-5" ></v-card>
-          <v-btn color="primary" @click.native="e1 = 4">Continue</v-btn>
-          <v-btn flat @click.native="e1 =2">Back</v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="4">
-          <v-card color="grey lighten-1" class="mb-5" ></v-card>
-          <v-btn color="primary" @click.native="e1 = 5">Continue</v-btn>
-          <v-btn flat @click.native="e1 =3">Back</v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="5">
-          <v-card color="grey lighten-1" class="mb-5" ></v-card>
-          <v-btn color="primary" @click.native="e1 = 6">Continue</v-btn>
-          <v-btn flat @click.native="e1 =4">Back</v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="6">
-          <v-card color="grey lighten-1" class="mb-5" ></v-card>
-          <v-btn color="primary" @click.native="e1 = 7">Continue</v-btn>
-          <v-btn flat @click.native="e1 =5">Back</v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="7">
-          <v-card color="grey lighten-1" class="mb-5" ></v-card>
-          <v-btn color="primary" @click.native="e1 = 1">Continue</v-btn>
-          <v-btn flat @click.native="e1 =6">Back</v-btn>
-        </v-stepper-content>
-      </v-stepper>
+                                    <v-layout row>
+                                        <v-flex xs3>
+                                            <v-text-field label="Phone number" required mask="phone" ></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs8>
+                                            <v-dialog v-model="contactDialog" persistent max-width="600px">
+                                                <v-btn small slot="activator">More...</v-btn>
+                                                <v-card>
+                                                    <v-card-title>
+                                                        <span class="headline">Contact Info</span>
+                                                    </v-card-title>
+                                                    <v-card-text>
+                                                        <v-container grid-list-md>
+                                                            <v-layout wrap>
+                                                                <v-flex xs12>
+                                                                    <v-text-field label="Mobile" required
+                                                                                  mask="phone"></v-text-field>
+                                                                </v-flex>
+                                                                <v-flex xs12>
+                                                                    <v-text-field label="Home" required
+                                                                                  mask="phone"></v-text-field>
+                                                                </v-flex>
+                                                                <v-flex xs12>
+                                                                    <v-text-field label="Business" required
+                                                                                  mask="phone"></v-text-field>
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-container>
+                                                    </v-card-text>
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="blue darken-1" flat
+                                                               @click.native="contactDialog = false">Close
+                                                        </v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-flex>
+                                    </v-layout>
+
+                            </v-container>
+                        </v-card-text>
+                    </v-form>
+                </v-card>
+                <v-btn color="primary" @click.native="e1 = 2">Continue</v-btn>
+                <v-btn flat>Cancel</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="2">
+                <v-card class="mb-5">
+                    <v-form v-model="valid">
+                        <v-tabs>
+                            <v-tabs-bar class="grey lighten-4">
+                                <v-tabs-slider></v-tabs-slider>
+                                <v-tabs-item
+                                        v-for="i in 2"
+                                        :key="i"
+                                        :href="'#tab-' + i"
+                                >
+                                    Vehicle {{ i }}
+                                </v-tabs-item>
+                                <v-tooltip right>
+                                    <v-btn slot="activator" icon>
+                                        <v-icon>add</v-icon>
+                                    </v-btn>
+                                    <span>Add Vehicle</span>
+                                </v-tooltip>
+                            </v-tabs-bar>
+                            <v-tabs-items>
+                                <v-tabs-content
+                                        v-for="(n,i) in 2"
+                                        :key="n"
+                                        :id="'tab-' + n"
+                                >
 
 
-  </div>
-  </script>
+                                    <v-card flat class="mb-5" fill-height>
+                                        <v-layout row>
+                                            <!--VIN Year Make Model-->
+                                            <v-card-text>
+                                                <v-container grid-list-md>
+                                                    <v-layout wrap fill-height>
+                                                        <v-flex xs12 sm6 md3>
+                                                            <v-text-field label="VIN" required></v-text-field>
+                                                        </v-flex>
+                                                        <v-flex xs12 sm6 md3>
+                                                            <v-select
+                                                                    v-bind:items="years"
+                                                                    v-model="year[i]"
+                                                                    label="Year"
+                                                                    autocomplete
+                                                                    persistent-hint
+                                                            ></v-select>
+                                                        </v-flex>
+                                                        <v-flex xs12 sm6 md3>
+                                                            <v-select v-bind:items="makes" v-model="make[i]"
+                                                                      label="Make" autocomplete></v-select>
+                                                        </v-flex>
+                                                        <v-flex xs12 sm6 md3>
+                                                            <v-select
+                                                                    v-bind:items="models"
+                                                                    v-model="model[i]"
+                                                                    label="Model"
+                                                                    autocomplete
+                                                            ></v-select>
+                                                        </v-flex>
+
+                                                        <v-flex xs12 sm6 md3>
+                                                            <!--Purchase  Purchase Price List Price New-->
+                                                            <v-menu
+                                                                    :close-on-content-click="false"
+                                                                    v-model="menu3[i]"
+                                                                    transition="scale-transition"
+                                                                    offset-y
+                                                                    full-width
+                                                                    :nudge-right="40"
+                                                                    max-width="290px"
+                                                                    min-width="290px"
+                                                            >
+                                                                <v-text-field
+                                                                        v-model="purchaseDate[i]"
+                                                                        slot="activator"
+                                                                        label="Purchase Date"
+                                                                        prepend-icon="event"
+                                                                        readonly
+                                                                ></v-text-field>
+                                                                <v-date-picker v-model="purchaseDate[i]" no-title
+                                                                               scrollable actions>
+                                                                    <template scope="{ save, cancel }">
+                                                                        <v-card-actions>
+                                                                            <v-spacer></v-spacer>
+                                                                            <v-btn flat color="primary" @click="cancel">
+                                                                                Cancel
+                                                                            </v-btn>
+                                                                            <v-btn flat color="primary" @click="save">
+                                                                                OK
+                                                                            </v-btn>
+                                                                        </v-card-actions>
+                                                                    </template>
+                                                                </v-date-picker>
+                                                            </v-menu>
+                                                        </v-flex>
+                                                        <v-flex xs12 md3>
+                                                            <v-text-field label="Purchase Price"
+                                                                          required></v-text-field>
+                                                        </v-flex>
+                                                        <v-flex xs12 md3>
+                                                            <v-text-field label="List Price New"
+                                                                          required></v-text-field>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                    <v-layout row>
+                                                        <v-flex xs12 md3>
+                                                            <v-switch label="Modified" v-model="modified[i]"></v-switch>
+                                                        </v-flex>
+                                                        <v-flex xs12 md3>
+                                                            <v-text-field class="beside-switch" prefix="$"
+                                                                          suffix="(CAD)" mask="####.##"
+                                                                          v-show="modified[i]" v-model="modAmount[i]"
+                                                                          label="Modification amount"></v-text-field>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                    <v-layout row>
+                                                        <v-flex xs12 md3>
+                                                            <v-switch label="Leased" v-model="leased[i]"></v-switch>
+                                                            <v-switch label="Unrepaired damage"
+                                                                      v-model="damage[i]"></v-switch>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                    <v-layout row>
+                                                        <v-flex xs12 md3>
+                                                            <v-switch label="Anti theft device"
+                                                                      v-model="antitheft[i]"></v-switch>
+                                                        </v-flex>
+                                                        <v-flex xs12 md3>
+                                                            <v-select
+                                                                    v-show="antitheft[i]"
+                                                                    class="beside-switch"
+                                                                    v-bind:items="antitheftModels"
+                                                                    v-model="antitheftModel"
+                                                                    label="Antitheft Model"
+                                                                    autocomplete
+                                                            ></v-select>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                    <v-layout row>
+                                                        <v-flex xs12 md3>
+                                                            <v-text-field suffix="Km" mask="#######" v-model="estKm[i]"
+                                                                          label="Estimated Annual Km"></v-text-field>
+                                                        </v-flex>
+                                                        <v-flex xs12 md3>
+                                                            <v-text-field suffix="Km" mask="#######"
+                                                                          v-model="estBizKm[i]"
+                                                                          label="Estimated Business Km"></v-text-field>
+                                                        </v-flex>
+                                                        <v-flex xs12 md3>
+                                                            <v-text-field suffix="Km" mask="#######"
+                                                                          v-model="onewayDist[i]"
+                                                                          label="Distance one way"></v-text-field>
+                                                        </v-flex>
+                                                    </v-layout>
+
+                                                </v-container>
+                                            </v-card-text>
+                                        </v-layout>
+                                    </v-card>
+                                </v-tabs-content>
+                            </v-tabs-items>
+                        </v-tabs>
+                    </v-form>
+                </v-card>
+                <v-btn color="primary" @click.native="e1 = 3">Continue</v-btn>
+                <v-btn flat @click.native="e1 =1">Back</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="3">
+                <v-card color="grey lighten-1" class="mb-5"></v-card>
+                <v-btn color="primary" @click.native="e1 = 4">Continue</v-btn>
+                <v-btn flat @click.native="e1 =2">Back</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="4">
+                <v-card color="grey lighten-1" class="mb-5"></v-card>
+                <v-btn color="primary" @click.native="e1 = 5">Continue</v-btn>
+                <v-btn flat @click.native="e1 =3">Back</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="5">
+                <v-card color="grey lighten-1" class="mb-5"></v-card>
+                <v-btn color="primary" @click.native="e1 = 6">Continue</v-btn>
+                <v-btn flat @click.native="e1 =4">Back</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="6">
+                <v-card color="grey lighten-1" class="mb-5"></v-card>
+                <v-btn color="primary" @click.native="e1 = 7">Continue</v-btn>
+                <v-btn flat @click.native="e1 =5">Back</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="7">
+                <v-card color="grey lighten-1" class="mb-5"></v-card>
+                <v-btn color="primary" @click.native="e1 = 1">Continue</v-btn>
+                <v-btn flat @click.native="e1 =6">Back</v-btn>
+            </v-stepper-content>
+        </v-stepper>
 
 
-  <script src="https://unpkg.com/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
-  <script>
+    </div>
+</script>
+
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+<script>
     Vue.component('page', {
-      template: '#page',
-        data:function() {
-          return {
-              e1:1,
-              effDate:null,
-              dates:['6 Month', '1 Year', '2 Year', 'Custom...' ],
-              models:['x', 'y', 'z'],
-              makes:['BMW', 'Volkswagen', 'Mercedes', 'Ford', 'Fiat', 'GMC'],
-              years:['2017','2016','2015','2014','2013','2012','2011','2010','2009','2008','2007','2006','2005','2004'],
-              expDate:null,
-              contactDialog:false,
-              model:[,],
-              year:[null,null],
-              purchaseDate:[null,null],
-              make:[,],
-              antitheft:[false,false],
-              antitheftModel:['',''],
-              antitheftModels:['modelA','modelB','modelD','modelC'],
-              menu3:[null,null],
-              newLeased:[null,null],
-              leased:[false,false],
-              damage:[false,false],
-              estKm:[,],
-              estBizKm:[,],
-              onewayDist:[,],
-              modified:[false, false],
-              modAmount:[null,null],
-              menu:null
-          }
+        template: '#page',
+        data: function () {
+            return {
+                e1: 1,
+                valid: false,
+                email: '',
+                firstName: '',
+                lastName: null,
+                effDate: null,
+                dates: ['6 Month', '1 Year', '2 Year', 'Custom...'],
+                models: ['x', 'y', 'z'],
+                makes: ['BMW', 'Volkswagen', 'Mercedes', 'Ford', 'Fiat', 'GMC'],
+                years: ['2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010', '2009', '2008', '2007', '2006', '2005', '2004'],
+                expDate: null,
+                contactDialog: false,
+                model: [,],
+                year: [null, null],
+                purchaseDate: [null, null],
+                make: [,],
+                antitheft: [false, false],
+                antitheftModel: ['', ''],
+                antitheftModels: ['modelA', 'modelB', 'modelD', 'modelC'],
+                menu3: [null, null],
+                newLeased: [null, null],
+                leased: [false, false],
+                damage: [false, false],
+                estKm: [,],
+                estBizKm: [,],
+                onewayDist: [,],
+                modified: [false, false],
+                modAmount: [null, null],
+                menu: null,
+
+//              picture the meta data for these rules being stored as {
+//                [ lhs:  this  operand: !=   rhs: null/empty ]
+//                [ lhs: this.length  operand: <=   rhs: 10 ]
+//                [ lhs: this.length  operand: <=   rhs: pembridge.config.maxLength ]
+//               there would be predefined rules like...
+//                [ lhs: this  function:isPhone ]
+//                [ lhs: this  function:isIn(fruit) ]
+//                [ lhs: this  function:isIn(['apple', 'banana', 'pear']) ]
+//              }
+                nameRules: [
+                    (v) => !!v || 'Name is required!!!!',
+                    (v) => v.length <= 10 || 'Name must be less than 10 characters!!!'
+                ],
+                emailRules: [
+                    (v) => !!v || 'E-mail is required',
+                    // could add your own regexp's or configure your own.
+                    (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+                ]
+            }
         },
         computed: {
-          expires() {
-              if (this.effDate && this.expDate) {
-                var d = new Date(this.effDate);
-                var year = d.getFullYear();
-                var month = d.getMonth();
-                var day = d.getDate();
-                if (this.expDate=='6 Month') {
-                    month+=6;
+            expires() {
+                if (this.effDate && this.expDate) {
+                    var d = new Date(this.effDate);
+                    var year = d.getFullYear();
+                    var month = d.getMonth();
+                    var day = d.getDate();
+                    if (this.expDate == '6 Month') {
+                        month += 6;
+                    }
+                    else if (this.expDate == '1 Year') {
+                        year += 1;
+                    }
+                    else if (this.expDate == '2 Years') {
+                        year += 2;
+                    }
+                    console.log(year + '' + month + '' + day + '');
+                    return 'expires ' + new Date(year, month, day).toLocaleDateString("en-US");
                 }
-                else if (this.expDate=='1 Year'){
-                    year+=1;
-                }
-                else if (this.expDate=='2 Years') {
-                    year+=2;
-                }
-                console.log(year + '' + month + '' + day + '');
-                return 'expires ' + new Date(year, month, day).toLocaleDateString("en-US");
-              }
-              return '';
-          }
+                return '';
+            }
         }
     })
     new Vue({
-      el: '#app',
-      data: {
-        clipped: false,
-        drawer: true,
-        fixed: false,
-        items: [
-          { icon: 'bubble_chart', title: 'Inspire' }
-        ],
-        miniVariant: false,
-        right: true,
-        rightDrawer: false,
-        title: 'Policy Demo'
-      }
+        el: '#app',
+        data: {
+            clipped: false,
+            drawer: true,
+            fixed: false,
+            items: [
+                {icon: 'bubble_chart', title: 'Inspire'}
+            ],
+            miniVariant: false,
+            right: true,
+            rightDrawer: false,
+            title: 'Policy Demo'
+        }
     })
-  </script>
+</script>
 </body>
 </html>
