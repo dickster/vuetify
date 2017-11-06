@@ -15,6 +15,7 @@
             margin-top: -18px;
         }
     </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwg4cl2q-ECnw3tWphYLuhGY_eYc4n7qw&libraries=places"></script>
 </head>
 <body>
 <div id="app">
@@ -85,6 +86,7 @@
 
                                     <v-layout row>
                                         <v-flex xs12 sm6 md3>
+
                                             <v-text-field
                                                     :rules="nameRules"
                                                     :counter="10"
@@ -211,11 +213,10 @@
                             <v-tabs-bar class="grey lighten-4">
                                 <v-tabs-slider></v-tabs-slider>
                                 <v-tabs-item
-                                        v-for="i in 2"
-                                        :key="i"
-                                        :href="'#tab-' + i"
+                                        v-for="(vehicle,index) in vehicles"
+                                        :href="'#tab-' + index"
                                 >
-                                    Vehicle {{ i }}
+                                    {{vehicleName(vehicle,index)}}
                                 </v-tabs-item>
                                 <v-tooltip right>
                                     <v-btn slot="activator" icon>
@@ -226,9 +227,8 @@
                             </v-tabs-bar>
                             <v-tabs-items>
                                 <v-tabs-content
-                                        v-for="(n,i) in 2"
-                                        :key="n"
-                                        :id="'tab-' + n"
+                                        v-for="(vehicle,index) in vehicles"
+                                        :id="'tab-' + index"
                                 >
 
 
@@ -239,25 +239,25 @@
                                                 <v-container grid-list-md>
                                                     <v-layout wrap fill-height>
                                                         <v-flex xs12 sm6 md3>
-                                                            <v-text-field label="VIN" required></v-text-field>
+                                                            <v-text-field label="VIN" required v-model="vehicle.vin"></v-text-field>
                                                         </v-flex>
                                                         <v-flex xs12 sm6 md3>
                                                             <v-select
                                                                     v-bind:items="years"
-                                                                    v-model="year[i]"
+                                                                    v-model="vehicle.year"
                                                                     label="Year"
                                                                     autocomplete
                                                                     persistent-hint
                                                             ></v-select>
                                                         </v-flex>
                                                         <v-flex xs12 sm6 md3>
-                                                            <v-select v-bind:items="makes" v-model="make[i]"
+                                                            <v-select v-bind:items="makes" v-model="vehicle.make"
                                                                       label="Make" autocomplete></v-select>
                                                         </v-flex>
                                                         <v-flex xs12 sm6 md3>
                                                             <v-select
                                                                     v-bind:items="models"
-                                                                    v-model="model[i]"
+                                                                    v-model="vehicle.model"
                                                                     label="Model"
                                                                     autocomplete
                                                             ></v-select>
@@ -267,7 +267,7 @@
                                                             <!--Purchase  Purchase Price List Price New-->
                                                             <v-menu
                                                                     :close-on-content-click="false"
-                                                                    v-model="menu3[i]"
+                                                                    v-model="vehicle.menu3"
                                                                     transition="scale-transition"
                                                                     offset-y
                                                                     full-width
@@ -276,13 +276,13 @@
                                                                     min-width="290px"
                                                             >
                                                                 <v-text-field
-                                                                        v-model="purchaseDate[i]"
+                                                                        v-model="vehicle.purchaseDate"
                                                                         slot="activator"
                                                                         label="Purchase Date"
                                                                         prepend-icon="event"
                                                                         readonly
                                                                 ></v-text-field>
-                                                                <v-date-picker v-model="purchaseDate[i]" no-title
+                                                                <v-date-picker v-model="vehicle.purchaseDate" no-title
                                                                                scrollable actions>
                                                                     <template scope="{ save, cancel }">
                                                                         <v-card-actions>
@@ -309,33 +309,33 @@
                                                     </v-layout>
                                                     <v-layout row>
                                                         <v-flex xs12 md3>
-                                                            <v-switch label="Modified" v-model="modified[i]"></v-switch>
+                                                            <v-switch label="Modified" v-model="vehicle.modified"></v-switch>
                                                         </v-flex>
                                                         <v-flex xs12 md3>
                                                             <v-text-field class="beside-switch" prefix="$"
                                                                           suffix="(CAD)" mask="####.##"
-                                                                          v-show="modified[i]" v-model="modAmount[i]"
+                                                                          v-show="vehicle.modified" v-model="vehicle.modAmount"
                                                                           label="Modification amount"></v-text-field>
                                                         </v-flex>
                                                     </v-layout>
                                                     <v-layout row>
                                                         <v-flex xs12 md3>
-                                                            <v-switch label="Leased" v-model="leased[i]"></v-switch>
+                                                            <v-switch label="Leased" v-model="vehicle.leased"></v-switch>
                                                             <v-switch label="Unrepaired damage"
-                                                                      v-model="damage[i]"></v-switch>
+                                                                      v-model="vehicle.damage"></v-switch>
                                                         </v-flex>
                                                     </v-layout>
                                                     <v-layout row>
                                                         <v-flex xs12 md3>
                                                             <v-switch label="Anti theft device"
-                                                                      v-model="antitheft[i]"></v-switch>
+                                                                      v-model="vehicle.antitheft"></v-switch>
                                                         </v-flex>
                                                         <v-flex xs12 md3>
                                                             <v-select
-                                                                    v-show="antitheft[i]"
+                                                                    v-show="vehicle.antitheft"
                                                                     class="beside-switch"
                                                                     v-bind:items="antitheftModels"
-                                                                    v-model="antitheftModel"
+                                                                    v-model="vehicle.antitheftModel"
                                                                     label="Antitheft Model"
                                                                     autocomplete
                                                             ></v-select>
@@ -343,17 +343,17 @@
                                                     </v-layout>
                                                     <v-layout row>
                                                         <v-flex xs12 md3>
-                                                            <v-text-field suffix="Km" mask="#######" v-model="estKm[i]"
-                                                                          label="Estimated Annual Km"></v-text-field>
+                                                            <v-text-field suffix="Km" mask="#######" v-model="vehicle.estKm"
+                                                                          label="Estimated Annual"></v-text-field>
                                                         </v-flex>
                                                         <v-flex xs12 md3>
                                                             <v-text-field suffix="Km" mask="#######"
-                                                                          v-model="estBizKm[i]"
-                                                                          label="Estimated Business Km"></v-text-field>
+                                                                          v-model="vehicle.estBizKm"
+                                                                          label="Estimated Business"></v-text-field>
                                                         </v-flex>
                                                         <v-flex xs12 md3>
                                                             <v-text-field suffix="Km" mask="#######"
-                                                                          v-model="onewayDist[i]"
+                                                                          v-model="vehicle.onewayDist"
                                                                           label="Distance one way"></v-text-field>
                                                         </v-flex>
                                                     </v-layout>
@@ -405,10 +405,12 @@
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
 <script>
+
     Vue.component('page', {
         template: '#page',
         data: function () {
             return {
+                address:null,
                 e1: 1,
                 valid: false,
                 email: '',
@@ -419,24 +421,49 @@
                 models: ['x', 'y', 'z'],
                 makes: ['BMW', 'Volkswagen', 'Mercedes', 'Ford', 'Fiat', 'GMC'],
                 years: ['2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010', '2009', '2008', '2007', '2006', '2005', '2004'],
+                antitheftModels: ['modelA', 'modelB', 'modelD', 'modelC'],
                 expDate: null,
                 contactDialog: false,
-                model: [,],
-                year: [null, null],
-                purchaseDate: [null, null],
-                make: [,],
-                antitheft: [false, false],
-                antitheftModel: ['', ''],
-                antitheftModels: ['modelA', 'modelB', 'modelD', 'modelC'],
-                menu3: [null, null],
-                newLeased: [null, null],
-                leased: [false, false],
-                damage: [false, false],
-                estKm: [,],
-                estBizKm: [,],
-                onewayDist: [,],
-                modified: [false, false],
-                modAmount: [null, null],
+                vehicles:[
+                    {
+                        model: '',
+                        make: '',
+                        index:null,
+                        vin:'',
+                        year: ''    ,
+                        purchaseDate: null,
+                        antitheft: false,
+                        antitheftModel: '',
+                        menu3: null,
+                        newLeased: null,
+                        leased: false,
+                        damage: false,
+                        estKm: null,
+                        estBizKm: null,
+                        onewayDist: null,
+                        modified: false,
+                        modAmount: null,
+                    },
+                    {
+                        model: '',
+                        make: '',
+                        vin:'',
+                        index:null,
+                        year: '',
+                        purchaseDate: null,
+                        antitheft: false,
+                        antitheftModel: '',
+                        menu3: null,
+                        newLeased: null,
+                        leased: false,
+                        damage: false,
+                        estKm: null,
+                        estBizKm: null,
+                        onewayDist: null,
+                        modified: false,
+                        modAmount: null,
+                    },
+                ],
                 menu: null,
 
 //              picture the meta data for these rules being stored as {
@@ -458,6 +485,11 @@
                     (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
                 ]
             }
+        },
+        methods:{
+          vehicleName(vehicle,i) {
+              return vehicle.make ? vehicle.year + ' ' + vehicle.make + ' ' + vehicle.model : 'Vehicle ' + i;
+          }
         },
         computed: {
             expires() {
@@ -483,9 +515,11 @@
         }
     })
     new Vue({
+
         el: '#app',
         data: {
             clipped: false,
+            address:null,
             drawer: true,
             fixed: false,
             items: [
@@ -495,7 +529,13 @@
             right: true,
             rightDrawer: false,
             title: 'Policy Demo'
+        },
+        methods: {
+            getAddressData: function (addressData, placeResultData, id) {
+                this.address = addressData;
+            }
         }
+
     })
 </script>
 </body>
