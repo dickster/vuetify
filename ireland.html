@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Ireland</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet"
+          type="text/css">
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link>
+    <link href="styles.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwg4cl2q-ECnw3tWphYLuhGY_eYc4n7qw&libraries=places"></script>-->
+</head>
+<body>
+<div id="app">
+    <v-app>
+
+        <v-toolbar fixed app>
+
+            <v-toolbar-title v-text="title"></v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon @click.native.stop="rightDrawer=true">
+                <v-icon>menu</v-icon>
+            </v-btn>
+        </v-toolbar>
+        <main>
+            <v-content>
+                <v-container fluid>
+                    <page></page>
+                </v-container>
+            </v-content>
+        </main>
+        <v-navigation-drawer
+                temporary
+                :right="right"
+                v-model="rightDrawer"
+                app
+        >
+            <v-list>
+                <v-list-tile>
+                    <v-list-tile-action>
+                        <v-icon>menu</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-title>Policy Information</v-list-tile-title>
+                </v-list-tile>
+                <template v-for="(value, key) in policy">
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-title v-html="key"></v-list-tile-title>
+                            <v-list-tile-sub-title v-html="value"></v-list-tile-sub-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </template>
+            </v-list>
+        </v-navigation-drawer>
+    </v-app>
+</div>
+
+<script type="text/x-template" id="page">
+    <div>
+        <v-stepper v-model="e1">
+            <v-stepper-header>
+                <v-stepper-step step="1" :complete="e1 > 1" editable>Underwriter Questions</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="2" :complete="e1 > 2" editable>Quote</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="3" :complete="e1 > 3" editable>Additional Information/Upload</v-stepper-step>
+                <v-divider></v-divider>
+            </v-stepper-header>
+            <v-stepper-content step="1">
+                <v-card class="mb-5" fill-height>
+                    <v-form v-model="valid">
+                        <v-card-title>
+                            <span class="headline">Underwriter Questions</span>
+                        </v-card-title>
+                            <v-card-text>
+                                <v-container grid-list-md>
+
+                                    <v-layout row>
+                                        <v-flex xs12 sm6 md5 class="input-group">
+                                            <label>Have you had an accident in the last year?</label>
+                                        </v-flex>
+                                        <v-flex xs12 sm6 md1>
+
+                                            <v-btn-toggle v-model="q1">
+                                                <v-btn >Yes</v-btn>
+                                                <v-btn >No</v-btn>
+                                            </v-btn-toggle>
+
+                                        </v-flex>
+                                    </v-layout>
+
+
+
+                                    <v-layout row>
+                                        <v-flex xs12 sm6 md5 class="input-group">
+                                            <label>Are you over 45 years of age?</label>
+                                        </v-flex>
+                                        <v-flex xs12 sm6 md1>
+
+                                            <v-btn-toggle v-model="q2">
+                                                <v-btn >Yes</v-btn>
+                                                <v-btn >No</v-btn>
+                                            </v-btn-toggle>
+
+                                        </v-flex>
+                                    </v-layout>
+
+                                    <v-layout row>
+                                        <v-flex xs12 sm6 md5 class="input-group">
+                                            <label>Did you file a claim in the last 2 years?</label>
+                                        </v-flex>
+                                        <v-flex xs12 sm6 md1>
+
+                                            <v-btn-toggle v-model="q3">
+                                                <v-btn >Yes</v-btn>
+                                                <v-btn >No</v-btn>
+                                            </v-btn-toggle>
+
+                                        </v-flex>
+                                    </v-layout>
+
+                                    <v-layout row>
+                                        <v-flex xs12 sm6 md5>
+                                            <v-text-field
+                                                    label="Describe the thing"
+                                                    :rules="[(v) => v.length <= 25 || 'Max 25 characters']"
+                                                    :counter="25"
+                                                    v-model="shortDesc"
+                                            ></v-text-field>
+                                        </v-flex>
+
+                                    </v-layout>
+
+                                    <v-layout row>
+                                        <v-flex xs12 sm6 md5>
+                                            <v-select
+                                                    v-model="visited"
+                                                    label="What countries have you visited in the last year?"
+                                                    chips
+                                                    tags
+                                                    :items="countries"
+                                            >
+                                                <template slot="selection" slot-scope="data">
+                                                    <v-chip
+                                                            close
+                                                            @input="removeCountry(data.item)"
+                                                            :selected="data.selected"
+                                                    >
+                                                        <strong>{{ data.item }}</strong>&nbsp;
+                                                    </v-chip>
+                                                </template>
+                                            </v-select>
+                                        </v-flex>
+
+                                    </v-layout>
+
+                                    <v-layout row>
+
+                                            <v-flex md5>
+                                                <v-menu
+                                                        ref="menu"
+                                                        lazy
+                                                        :close-on-content-click="false"
+                                                        v-model="menu"
+                                                        transition="scale-transition"
+                                                        offset-y
+                                                        full-width
+                                                        :nudge-right="40"
+                                                        min-width="290px"
+                                                >
+                                                    <!--:return-value.sync="accidentDate"-->
+
+                                                    <v-text-field
+                                                            slot="activator"
+                                                            label="What day was the accident?"
+                                                            prepend-icon="event"
+                                                            readonly
+                                                            v-model="accidentDate"
+                                                    ></v-text-field>
+                                                    <v-date-picker ref="picker"
+                                                                   v-model="accidentDate"
+                                                                   @change="$refs.menu.save(accidentDate)"
+                                                                   scrollable>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
+                                                        <v-btn flat color="primary" @click="$refs.menu.save(accidentDate)">OK</v-btn>
+                                                    </v-date-picker>
+                                                </v-menu>
+                                            </v-flex>
+
+
+
+                                    </v-layout>
+                                    <v-layout row>
+
+                                        <v-flex md5>
+                                            <v-menu
+                                                    ref="menu2"
+                                                    lazy
+                                                    :close-on-content-click="false"
+                                                    v-model="menu2"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    full-width
+                                                    :nudge-right="40"
+                                                    min-width="290px"
+                                            >
+                                                <v-text-field
+                                                        slot="activator"
+                                                        label="What's your birthday?"
+                                                        v-model="birthday"
+                                                        prepend-icon="event"
+                                                        readonly
+                                                ></v-text-field>
+                                                <v-date-picker
+                                                        ref="picker"
+                                                        v-model="birthday"
+                                                        @change="$refs.menu.save(birthday)"
+                                                        min="1950-01-01"
+                                                        :max="new Date().toISOString().substr(0, 10)"
+                                                ></v-date-picker>
+                                            </v-menu>
+                                        </v-flex>
+
+                                    </v-layout>
+
+                                    <v-layout row>
+                                        <v-flex md5>
+                                            <v-text-field prepend-icon="phone" label="Phone number" required mask="phone" ></v-text-field>
+                                        </v-flex>
+                                        <v-flex md7>
+                                            <v-dialog v-model="contactDialog" persistent max-width="400px">
+                                                <v-btn flat slot="activator">More Phone #'s...</v-btn>
+                                                <v-card>
+                                                    <v-card-title>
+                                                        <span class="headline">Contact Info</span>
+                                                    </v-card-title>
+                                                    <v-card-text>
+                                                        <v-container grid-list-md>
+                                                            <v-layout wrap>
+                                                                <v-flex xs12>
+                                                                    <v-text-field label="Mobile" required
+                                                                                  mask="phone"></v-text-field>
+                                                                </v-flex>
+                                                                    <v-flex xs12>
+                                                                    <v-text-field label="Home" required
+                                                                                  mask="phone"></v-text-field>
+                                                                </v-flex>
+                                                                <v-flex xs12>
+                                                                    <v-text-field label="Business" required
+                                                                                  mask="phone"></v-text-field>
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-container>
+                                                    </v-card-text>
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="blue darken-1" flat
+                                                               @click.native="contactDialog = false">Close
+                                                        </v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-flex>
+                                    </v-layout>
+
+                                    <v-layout align-center row>
+                                        <v-checkbox v-model="includeFiles" hide-details class="shrink mr-2"></v-checkbox>
+                                        <v-text-field label="Drivers License" :disabled="!includeFiles"></v-text-field>
+                                    </v-layout>
+
+                                    <v-layout align-center row>
+                                        <v-switch label="I am over 18 yrs of age." v-model="over18"></v-switch>
+                                    </v-layout>
+
+                                    <v-layout align-center row>
+                                        <v-switch label="I am a student." v-model="student"></v-switch>
+                                    </v-layout>
+                            </v-container>
+                        </v-card-text>
+                    </v-form>
+                    <v-btn
+                            color="indigo"
+                            key="next"
+                            dark
+                            fab
+                            fixed
+                            bottom
+                            right
+                            v-model="fab"
+                    >
+                        <v-icon>share</v-icon>
+                        <v-icon>close</v-icon>
+                    </v-btn>
+                </v-card>
+                <v-btn color="primary" @click.native="e1 = 2">Continue</v-btn>
+                <v-btn flat>Cancel</v-btn>
+
+            </v-stepper-content>
+            <v-stepper-content step="2">
+                <v-card class="mb-5">
+                </v-card>
+                <v-btn color="primary" @click.native="e1 = 3">Continue</v-btn>
+                <v-btn flat @click.native="e1 =1">Back</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="3">
+                <v-card color="grey lighten-1" class="mb-5"></v-card>
+                <v-btn color="primary" @click.native="e1 = 4">Continue</v-btn>
+                <v-btn flat @click.native="e1 =2">Back</v-btn>
+            </v-stepper-content>
+        </v-stepper>
+
+
+    </div>
+</script>
+
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+<script>
+
+    <!--TODO : refactor this into separate .vue file.-->
+    var store = {
+        clipped: false,
+        address:null,
+        drawer: true,
+        fixed: false,
+        items: [
+            {icon: 'bubble_chart', title: 'Inspire'}
+        ],
+        miniVariant: false,
+        right: true,
+        rightDrawer: false,
+        title: 'Policy Demo',
+
+        policy: {
+            foo:'hello',
+            fab:null,
+            q1: 0,
+            q2: null,
+            q3: null,
+            visited: null,
+            contactDialog: null,
+            includeFiles: null,
+            countries: [
+                'Angola',
+                'Belize',
+                'Canada',
+                'Denmark',
+                'Egypt',
+                'France',
+                'Germany',
+                'Honduras',
+                'Ireland',
+                'Japan'
+            ],
+
+            over18: null,
+            student: null,
+            accidentDate: null,
+            birthday: null,
+            shortDesc: '',
+            e1: 1,
+            valid: false,
+            email: '',
+            firstName: '',
+            lastName: null,
+            effDate: null,
+
+            menu: null,
+            menu2: null,
+
+            nameRules: [
+                (v) => !!v || 'Name is required!!!!',
+                (v) => v.length <= 10 || 'Name must be less than 10 characters!!!'
+            ],
+            emailRules: [
+                (v) => !!v || 'E-mail is required',
+                // could add your own regexp's or configure your own.
+                (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+            ]
+        }
+    }
+
+
+    Vue.component('page', {
+        template: '#page',
+        data: function () {
+            return store.policy
+        },
+        methods:{
+            removeCountry (item) {
+                this.visited.splice(this.visited.indexOf(item), 1);
+                this.visited = [...this.visited];
+                console.log(store.policy);
+            },
+
+        },
+        watch: {
+            menu2 (val) {
+                val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+
+            }
+        },
+        computed: {
+            expires() {
+                if (this.effDate && this.expDate) {
+                    var d = new Date(this.effDate);
+                    var year = d.getFullYear();
+                    var month = d.getMonth();
+                    var day = d.getDate();
+                    if (this.expDate == '6 Month') {
+                        month += 6;
+                    }
+                    else if (this.expDate == '1 Year') {
+                        year += 1;
+                    }
+                    else if (this.expDate == '2 Years') {
+                        year += 2;
+                    }
+                    console.log(year + '' + month + '' + day + '');
+                    return 'expires ' + new Date(year, month, day).toLocaleDateString("en-US");
+                }
+                return '';
+            }
+        }
+    })
+
+    new Vue({
+        el: '#app',
+        data: store,
+        methods: {
+        }
+    })
+
+</script>
+</body>
+</html>
