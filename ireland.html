@@ -136,6 +136,19 @@
                                     <v-layout row>
                                         <v-flex xs12 sm6 md5>
                                             <v-select
+                                                    :items="vehicleManufacturers"
+                                                    v-model="vehicleManufacturer"
+                                                    label="Vehicle Manufacturer"
+                                                    autocomplete
+                                            >
+                                            </v-select>
+                                        </v-flex>
+
+                                    </v-layout>
+
+                                    <v-layout row>
+                                        <v-flex xs12 sm6 md5>
+                                            <v-select
                                                     v-model="visited"
                                                     label="What countries have you visited in the last year?"
                                                     chips
@@ -281,19 +294,19 @@
                             </v-container>
                         </v-card-text>
                     </v-form>
-                    <v-btn
-                            color="indigo"
-                            key="next"
-                            dark
-                            fab
-                            fixed
-                            bottom
-                            right
-                            v-model="fab"
-                    >
-                        <v-icon>share</v-icon>
-                        <v-icon>close</v-icon>
-                    </v-btn>
+                    <!--<v-btn-->
+                            <!--color="indigo"-->
+                            <!--key="next"-->
+                            <!--dark-->
+                            <!--fab-->
+                            <!--fixed-->
+                            <!--bottom-->
+                            <!--right-->
+                            <!--v-model="fab"-->
+                    <!--&gt;-->
+                        <!--<v-icon>share</v-icon>-->
+                        <!--<v-icon>close</v-icon>-->
+                    <!--</v-btn>-->
                 </v-card>
                 <v-btn color="primary" @click.native="e1 = 2">Continue</v-btn>
                 <v-btn flat>Cancel</v-btn>
@@ -301,6 +314,58 @@
             </v-stepper-content>
             <v-stepper-content step="2">
                 <v-card class="mb-5">
+                    <v-form v-model="valid">
+                        <v-card-title>
+                            <span class="headline">Quote (Premium Adjustment)</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-container grid-list-md>
+
+                                <v-layout row align-center>
+                                    <v-flex md2 offset-md8>
+                                        <v-icon>attach_money</v-icon>
+                                        <span class="headline">{{quote}}</span>
+                                        <v-progress-circular v-if="calculating":size="20" indeterminate color="primary"></v-progress-circular>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row>
+                                    <v-flex md5>
+                                        <v-slider v-model="deductible"  min="500" max="3000" label="Deductible" step="100" ticks v-on:click="updateQuote"></v-slider>
+                                    </v-flex>
+                                    <v-flex md1>
+                                        <v-text-field v-model="deductible" type="number" step="100" @change="updateQuote"></v-text-field>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row>
+                                    <v-flex md5>
+                                        <v-slider v-model="liability" min="1" max="2.5" label="Liability" thumb-label step=".1" ticks v-on:click="updateQuote"></v-slider>
+                                    </v-flex>
+                                    <v-flex md1>
+                                        <v-text-field v-model="liability" step=".1" type="number" @change="updateQuote"></v-text-field>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row>
+                                    <v-flex md1 class="input-group">
+                                        <label>Payment Method</label>
+                                    </v-flex>
+                                    <v-flex md4>
+                                        <v-btn-toggle v-model="payment" @change="updateQuote">
+                                            <v-btn flat>
+                                                Monthly
+                                            </v-btn>
+                                            <v-btn flat>
+                                                Weekly
+                                            </v-btn>
+                                            <v-btn flat>
+                                                Yearly
+                                            </v-btn>
+                                        </v-btn-toggle>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-card-text>
+                    </v-form>
+
                 </v-card>
                 <v-btn color="primary" @click.native="e1 = 3">Continue</v-btn>
                 <v-btn flat @click.native="e1 =1">Back</v-btn>
@@ -336,11 +401,15 @@
         title: 'Policy Demo',
 
         policy: {
-            foo:'hello',
+            calculating:false,
+            quote:null,
             fab:null,
             q1: 0,
             q2: null,
             q3: null,
+            liability:0,
+            deductible:0,
+            payment:1,
             visited: null,
             contactDialog: null,
             includeFiles: null,
@@ -356,6 +425,9 @@
                 'Ireland',
                 'Japan'
             ],
+
+            vehicleManufacturer:null,
+            vehicleManufacturers: ['BMW', 'Volkswagen', 'Mercedes', 'Ford', 'Fiat', 'GMC', 'Chrysler', 'Audi', 'Toyota', 'Honda', 'Kia', 'Hyundai', 'Hugo', 'Nash'],
 
             over18: null,
             student: null,
@@ -391,6 +463,15 @@
             return store.policy
         },
         methods:{
+            updateQuote() {
+                this.calculating = true;
+                var self = this;
+                setTimeout(function() {
+                    console.log('changing quote');
+                    self.quote = (Math.random()*10000).toFixed(2);;
+                    self.calculating = false;
+                }, 1500);
+            },
             removeCountry (item) {
                 this.visited.splice(this.visited.indexOf(item), 1);
                 this.visited = [...this.visited];
@@ -401,7 +482,6 @@
         watch: {
             menu2 (val) {
                 val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
-
             }
         },
         computed: {

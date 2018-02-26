@@ -358,6 +358,28 @@
                                                         </v-flex>
                                                     </v-layout>
 
+                                                    <v-layout row>
+                                                        <v-flex xs12 md3>
+                                                            <v-switch label="More dynamic information"
+                                                                      v-model="vehicle.more"></v-switch>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                    <div v-show="vehicle.more">
+                                                        <v-layout row>
+                                                                <v-text-field label="Blah"></v-text-field>
+                                                        </v-layout>
+                                                        <v-layout row>
+                                                            <v-text-field label="Bladda"></v-text-field>
+                                                        </v-layout>
+                                                        <v-layout row>
+                                                            <v-text-field label="Yadda"></v-text-field>
+                                                        </v-layout>
+                                                    </div>
+                                                    <v-layout row>
+                                                        <v-flex xs12 md3>
+                                                            <v-switch label="Coverages"></v-switch>
+                                                        </v-flex>
+                                                    </v-layout>
                                                 </v-container>
                                             </v-card-text>
                                         </v-layout>
@@ -428,6 +450,7 @@
                     {
                         model: '',
                         make: '',
+                        more: false,
                         index:null,
                         vin:'',
                         year: ''    ,
@@ -447,6 +470,7 @@
                     {
                         model: '',
                         make: '',
+                        more: false,
                         vin:'',
                         index:null,
                         year: '',
