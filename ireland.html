@@ -322,30 +322,31 @@
                             <v-container grid-list-md>
 
                                 <v-layout row align-center>
-                                    <v-flex md2 offset-md8>
+                                    <v-flex md3 offset-md8 class="headline">
+                                        <span >Premium</span>
                                         <v-icon>attach_money</v-icon>
-                                        <span class="headline">{{quote}}</span>
+                                        <span>{{quote}}</span>
                                         <v-progress-circular v-if="calculating":size="20" indeterminate color="primary"></v-progress-circular>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row>
-                                    <v-flex md5>
+                                    <v-flex md6>
                                         <v-slider v-model="deductible"  min="500" max="3000" label="Deductible" step="100" ticks v-on:click="updateQuote"></v-slider>
                                     </v-flex>
-                                    <v-flex md1>
-                                        <v-text-field v-model="deductible" type="number" step="100" @change="updateQuote"></v-text-field>
+                                    <v-flex md2>
+                                        <v-text-field prepend-icon="attach_money" suffix="" v-model="deductible" type="number" step="100" @input="updateQuote"></v-text-field>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row>
-                                    <v-flex md5>
+                                    <v-flex md6>
                                         <v-slider v-model="liability" min="1" max="2.5" label="Liability" thumb-label step=".1" ticks v-on:click="updateQuote"></v-slider>
                                     </v-flex>
-                                    <v-flex md1>
-                                        <v-text-field v-model="liability" step=".1" type="number" @change="updateQuote"></v-text-field>
+                                    <v-flex md2>
+                                        <v-text-field prepend-icon="attach_money" suffix="(Million)" v-model="liability" step=".1" type="number" @input="updateQuote"></v-text-field>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row>
-                                    <v-flex md1 class="input-group">
+                                    <v-flex md2 class="input-group">
                                         <label>Payment Method</label>
                                     </v-flex>
                                     <v-flex md4>
