@@ -18,7 +18,7 @@
 
         <v-toolbar fixed app>
 
-            <v-toolbar-title v-text="title"></v-toolbar-title>
+            <v-toolbar-title class="headline" v-text="title"></v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click.native.stop="rightDrawer=true">
                 <v-icon>menu</v-icon>
@@ -59,16 +59,125 @@
 
 <script type="text/x-template" id="page">
     <div>
+
+
         <v-stepper v-model="e1">
             <v-stepper-header>
-                <v-stepper-step step="1" :complete="e1 > 1" editable>Underwriter Questions</v-stepper-step>
+                <v-stepper-step step="1" :complete="e1 > 1" editable>Policy Details</v-stepper-step>
                 <v-divider></v-divider>
-                <v-stepper-step step="2" :complete="e1 > 2" editable>Quote</v-stepper-step>
+                <v-stepper-step step="2" :complete="e1 > 2" editable>Underwriter Questions</v-stepper-step>
                 <v-divider></v-divider>
-                <v-stepper-step step="3" :complete="e1 > 3" editable>Additional Information/Upload</v-stepper-step>
+                <v-stepper-step step="3" :complete="e1 > 3" editable>Quote</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="4" :complete="e1 > 4" editable>Additional Information/Upload</v-stepper-step>
                 <v-divider></v-divider>
             </v-stepper-header>
+
             <v-stepper-content step="1">
+                <v-card class="mb-5" fill-height>
+                    <v-form v-model="valid">
+                        <v-card-title>
+                            <span class="headline">Policy Details</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-container grid-list-md>
+
+                                <v-layout row>
+                                    <v-flex xs12 sm6 md3>
+
+                                        <v-text-field
+                                                :rules="nameRules"
+                                                :counter="10"
+                                                label="First"
+                                                v-model="firstName"
+                                                required
+                                                hint="what's your first name?"></v-text-field>
+                                    </v-flex>
+                                    <v-flex xs12 sm6 md3>
+                                        <v-text-field
+                                                v-model="lastName"
+                                                label="Last"
+                                                hint="what's your last name?"
+                                                required></v-text-field>
+                                    </v-flex>
+                                    <v-flex xs12 sm6 md3>
+                                        <v-menu
+                                                lazy
+                                                :close-on-content-click="false"
+                                                v-model="effDateMenu"
+                                                transition="scale-transition"
+                                                offset-y
+                                                full-width
+                                                :nudge-right="40"
+                                                max-width="290px"
+                                                min-width="290px"
+                                        >
+                                            <v-text-field
+                                                    v-model="effDate"
+                                                    slot="activator"
+                                                    label="Effective Date"
+                                                    prepend-icon="event"
+                                                    readonly
+                                            ></v-text-field>
+                                            <v-date-picker
+                                                    ref="picker"
+                                                    v-model="effDate"
+                                                    @change="$refs.menu.save(effDate)"
+                                                    max="2019-01-01"
+                                                    :min="new Date().toISOString().substr(0, 10)"
+                                            ></v-date-picker>
+
+                                        </v-menu>
+                                    </v-flex>
+                                    <v-flex xs12 sm6 md3>
+                                        <v-select
+                                                v-bind:items="dates"
+                                                v-model="expDate"
+                                                label="Policy Term"
+                                                autocomplete
+                                                :hint=expires
+                                                persistent-hint
+                                        ></v-select>
+                                    </v-flex>
+                                </v-layout>
+
+                                <v-layout row>
+                                    <v-flex md10>
+                                        <v-text-field label="Address" required></v-text-field>
+                                    </v-flex>
+
+                                    <v-flex md2>
+                                        <v-text-field
+                                                :rules="emailRules"
+                                                label="Email"
+                                                v-model="email"
+                                                required>
+                                        </v-text-field>
+                                    </v-flex>
+                                </v-layout>
+
+                                <v-layout row>
+                                    <v-flex md5>
+                                        <v-select
+                                                :items="insurers"
+                                                v-model="previousInsurer"
+                                                label="Previous Insurer"
+                                                autocomplete
+                                        >
+                                        </v-select>
+
+                                    </v-flex>
+                                </v-layout>
+
+                            </v-container>
+                        </v-card-text>
+                    </v-form>
+                </v-card>
+                <v-btn color="primary" @click.native="e1 = 2">Continue</v-btn>
+                <v-btn flat>Cancel</v-btn>
+            </v-stepper-content>
+
+            <v-stepper-content step="2">
                 <v-card class="mb-5" fill-height>
                     <v-form v-model="valid">
                         <v-card-title>
@@ -82,15 +191,23 @@
                                             <label>Have you had an accident in the last year?</label>
                                         </v-flex>
                                         <v-flex xs12 sm6 md1>
-
                                             <v-btn-toggle v-model="q1">
-                                                <v-btn >Yes</v-btn>
-                                                <v-btn >No</v-btn>
+                                                <v-btn value="1">Yes</v-btn>
+                                                <v-btn value="0">No</v-btn>
                                             </v-btn-toggle>
-
                                         </v-flex>
                                     </v-layout>
-
+                                    <v-layout row>
+                                        <v-flex md10>
+                                            <v-text-field v-if="q1"
+                                                          :rules="descRules"
+                                                          v-model="accidentDesc"
+                                                            label="Details"
+                                                            persistent-hint="Please describe the accident"
+                                                            multi-line
+                                            ></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
 
 
                                     <v-layout row>
@@ -118,6 +235,17 @@
                                                 <v-btn >No</v-btn>
                                             </v-btn-toggle>
 
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout row>
+                                        <v-flex md10>
+                                            <v-text-field v-if="q3"
+                                                          name="claimDesc"
+                                                          :rules="[(v) => v.length <= 50 || 'Max 50 characters']"
+                                                          label="Details"
+                                                          persistent-hint="Please give details about the claim"
+                                                          multi-line
+                                            ></v-text-field>
                                         </v-flex>
                                     </v-layout>
 
@@ -308,11 +436,11 @@
                         <!--<v-icon>close</v-icon>-->
                     <!--</v-btn>-->
                 </v-card>
-                <v-btn color="primary" @click.native="e1 = 2">Continue</v-btn>
+                <v-btn color="primary" @click.native="e1 = 3">Continue</v-btn>
                 <v-btn flat>Cancel</v-btn>
 
             </v-stepper-content>
-            <v-stepper-content step="2">
+            <v-stepper-content step="3">
                 <v-card class="mb-5">
                     <v-form v-model="valid">
                         <v-card-title>
@@ -368,13 +496,13 @@
                     </v-form>
 
                 </v-card>
-                <v-btn color="primary" @click.native="e1 = 3">Continue</v-btn>
+                <v-btn color="primary" @click.native="e1 = 4">Continue</v-btn>
                 <v-btn flat @click.native="e1 =1">Back</v-btn>
             </v-stepper-content>
             <v-stepper-content step="3">
                 <v-card color="grey lighten-1" class="mb-5"></v-card>
-                <v-btn color="primary" @click.native="e1 = 4">Continue</v-btn>
-                <v-btn flat @click.native="e1 =2">Back</v-btn>
+                <v-btn color="primary" @click.native="e1 = 1">Continue</v-btn>
+                <v-btn flat @click.native="e1=2">Back</v-btn>
             </v-stepper-content>
         </v-stepper>
 
@@ -399,7 +527,7 @@
         miniVariant: false,
         right: true,
         rightDrawer: false,
-        title: 'Policy Demo',
+        title: 'New Ireland',
 
         policy: {
             calculating:false,
@@ -430,6 +558,7 @@
             vehicleManufacturer:null,
             vehicleManufacturers: ['BMW', 'Volkswagen', 'Mercedes', 'Ford', 'Fiat', 'GMC', 'Chrysler', 'Audi', 'Toyota', 'Honda', 'Kia', 'Hyundai', 'Hugo', 'Nash'],
 
+            accidentDesc:null,
             over18: null,
             student: null,
             accidentDate: null,
@@ -440,10 +569,15 @@
             email: '',
             firstName: '',
             lastName: null,
-            effDate: null,
+            previousInsurer:null,
+            insurers:['Axa', 'Alliance', 'Prudential', 'Zurich','Manulife'],
 
+            dates: ['6 Month', '1 Year', '2 Year', 'Custom...'],
             menu: null,
             menu2: null,
+            effDateMenu:null,
+            effDate: null,
+            expDate:null,
 
             nameRules: [
                 (v) => !!v || 'Name is required!!!!',
