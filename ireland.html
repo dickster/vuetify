@@ -95,13 +95,17 @@
                                     </v-flex>
                                     <v-flex xs12 sm6 md3>
                                         <v-text-field
+                                                :rules="nameRules"
                                                 v-model="lastName"
                                                 label="Last"
                                                 hint="what's your last name?"
                                                 required></v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6 md3>
+                                            <v-tooltip bottom>
+                                                <span>Effective Date must can not be in the past.</span>
                                         <v-menu
+                                                slot="activator"
                                                 lazy
                                                 :close-on-content-click="false"
                                                 v-model="effDateMenu"
@@ -112,13 +116,13 @@
                                                 max-width="290px"
                                                 min-width="290px"
                                         >
-                                            <v-text-field
-                                                    v-model="effDate"
-                                                    slot="activator"
-                                                    label="Effective Date"
-                                                    prepend-icon="event"
-                                                    readonly
-                                            ></v-text-field>
+                                                <v-text-field
+                                                        v-model="effDate"
+                                                        slot="activator"
+                                                        label="Effective Date"
+                                                        prepend-icon="event"
+                                                        readonly
+                                                ></v-text-field>
                                             <v-date-picker
                                                     ref="picker"
                                                     v-model="effDate"
@@ -128,6 +132,7 @@
                                             ></v-date-picker>
 
                                         </v-menu>
+                                            </v-tooltip>
                                     </v-flex>
                                     <v-flex xs12 sm6 md3>
                                         <v-select
@@ -192,22 +197,41 @@
                                         </v-flex>
                                         <v-flex xs12 sm6 md1>
                                             <v-btn-toggle v-model="q1">
-                                                <v-btn value="1">Yes</v-btn>
-                                                <v-btn value="0">No</v-btn>
+                                                <v-btn value="YES">Yes</v-btn>
+                                                <v-btn value="NO">No</v-btn>
                                             </v-btn-toggle>
                                         </v-flex>
                                     </v-layout>
-                                    <v-layout row>
-                                        <v-flex md10>
-                                            <v-text-field v-if="q1"
-                                                          :rules="descRules"
-                                                          v-model="accidentDesc"
-                                                            label="Details"
-                                                            persistent-hint="Please describe the accident"
-                                                            multi-line
-                                            ></v-text-field>
-                                        </v-flex>
-                                    </v-layout>
+                                    <div v-if="q1=='YES'">
+
+                                        <v-layout row>
+
+                                            <v-flex md10 offset-md1>
+                                                <v-text-field
+                                                              :rules="descRules"
+                                                              v-model="accidentDesc"
+                                                                label="Details"
+                                                                hint="Please describe the accident"
+                                                                persistent-hint
+                                                                multi-line
+                                                              rows="2"
+                                                ></v-text-field>
+                                            </v-flex>
+                                        </v-layout>
+
+                                        <v-layout row>
+                                            <v-flex md2 offset-md1 class="input-group">
+                                                <label>Damaged</label>
+                                            </v-flex>
+                                            <v-flex md8 class="input-group">
+                                                    <v-checkbox label="Fender" v-model="damage" value="fender"></v-checkbox>
+                                                    <v-checkbox label="Bumper" v-model="damage" value="bumper"></v-checkbox>
+                                                    <v-checkbox label="Windshield" v-model="damage" value="windshield"></v-checkbox>
+                                                    <v-checkbox label="Tires" v-model="damage" value="tires"></v-checkbox>
+                                            </v-flex>
+                                        </v-layout>
+
+                                    </div>
 
 
                                     <v-layout row>
@@ -217,8 +241,8 @@
                                         <v-flex xs12 sm6 md1>
 
                                             <v-btn-toggle v-model="q2">
-                                                <v-btn >Yes</v-btn>
-                                                <v-btn >No</v-btn>
+                                                <v-btn value="YES">Yes</v-btn>
+                                                <v-btn value="NO">No</v-btn>
                                             </v-btn-toggle>
 
                                         </v-flex>
@@ -231,20 +255,22 @@
                                         <v-flex xs12 sm6 md1>
 
                                             <v-btn-toggle v-model="q3">
-                                                <v-btn >Yes</v-btn>
-                                                <v-btn >No</v-btn>
+                                                <v-btn value="YES">Yes</v-btn>
+                                                <v-btn value="NO">No</v-btn>
                                             </v-btn-toggle>
 
                                         </v-flex>
                                     </v-layout>
-                                    <v-layout row>
-                                        <v-flex md10>
-                                            <v-text-field v-if="q3"
+                                    <v-layout v-if="q3=='YES'" row>
+                                        <v-flex md10 offset-md1>
+                                            <v-text-field
                                                           name="claimDesc"
                                                           :rules="[(v) => v.length <= 50 || 'Max 50 characters']"
                                                           label="Details"
-                                                          persistent-hint="Please give details about the claim"
+                                                          persistent-hint
+                                                          hint="Please give details about the claim"
                                                           multi-line
+                                                          rows="2"
                                             ></v-text-field>
                                         </v-flex>
                                     </v-layout>
@@ -440,6 +466,7 @@
                 <v-btn flat>Cancel</v-btn>
 
             </v-stepper-content>
+
             <v-stepper-content step="3">
                 <v-card class="mb-5">
                     <v-form v-model="valid">
@@ -494,16 +521,28 @@
                             </v-container>
                         </v-card-text>
                     </v-form>
-
                 </v-card>
-                <v-btn color="primary" @click.native="e1 = 4">Continue</v-btn>
-                <v-btn flat @click.native="e1 =1">Back</v-btn>
-            </v-stepper-content>
-            <v-stepper-content step="3">
-                <v-card color="grey lighten-1" class="mb-5"></v-card>
                 <v-btn color="primary" @click.native="e1 = 1">Continue</v-btn>
                 <v-btn flat @click.native="e1=2">Back</v-btn>
+
             </v-stepper-content>
+
+            <v-stepper-content step="4">
+
+                <v-jumbotron color="primary" dark>
+                    <v-container fill-height>
+                        <v-layout align-center>
+                            <v-flex text-xs-center>
+                                <h3 class="display-3">Last Page Here</h3>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </v-jumbotron>
+
+                <v-btn color="primary" @click.native="e1 = 1">Continue</v-btn>
+                <v-btn flat @click.native="e1=3">Back</v-btn>
+            </v-stepper-content>
+
         </v-stepper>
 
 
@@ -533,7 +572,7 @@
             calculating:false,
             quote:null,
             fab:null,
-            q1: 0,
+            q1: false,
             q2: null,
             q3: null,
             liability:0,
@@ -558,6 +597,7 @@
             vehicleManufacturer:null,
             vehicleManufacturers: ['BMW', 'Volkswagen', 'Mercedes', 'Ford', 'Fiat', 'GMC', 'Chrysler', 'Audi', 'Toyota', 'Honda', 'Kia', 'Hyundai', 'Hugo', 'Nash'],
 
+            damage:[],
             accidentDesc:null,
             over18: null,
             student: null,
@@ -579,9 +619,13 @@
             effDate: null,
             expDate:null,
 
+            descRules: [
+                (v) => v&&v.length<100 || 'Description is required and must be less than 100 chars.'
+            ],
+
             nameRules: [
                 (v) => !!v || 'Name is required!!!!',
-                (v) => v.length <= 10 || 'Name must be less than 10 characters!!!'
+                (v) => v=='Test'|| 'Name must be "Test"!'
             ],
             emailRules: [
                 (v) => !!v || 'E-mail is required',
